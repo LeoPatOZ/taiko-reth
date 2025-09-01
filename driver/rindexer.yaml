@@ -1,0 +1,25 @@
+name: driver
+project_type: rust
+config: {}
+timestamps: null
+networks:
+  - name: ethereum
+    chain_id: 1
+    rpc: https://mainnet.gateway.tenderly.co
+storage:
+  postgres:
+    enabled: true
+  csv:
+    enabled: true
+    path: ./generated_csv
+native_transfers:
+  enabled: false
+contracts:
+  - name: MainnetInbox
+    details:
+      - network: ethereum
+        address: 0x06a9ab27c7e2255df1815e6cc0168d7755feb19a
+        start_block: "23267441"
+    abi: ./abis/MainnetInbox.abi.json
+    include_events:
+      - name: BatchProposed

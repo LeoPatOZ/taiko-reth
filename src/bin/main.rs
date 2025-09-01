@@ -1,4 +1,5 @@
 //! Rust Taiko node (taiko-reth) binary executable.
+use driver;
 use reth::{args::RessArgs, builder::NodeHandle, ress::install_ress_subprotocol};
 use reth_rpc::eth::{EthApiTypes, RpcNodeCore};
 use taiko_reth::{
@@ -54,10 +55,14 @@ fn main() {
                     node.provider,
                     node.evm_config,
                     node.network,
-                    node.task_executor,
+                    node.task_executor.clone(),
                     node.add_ons_handle.engine_events.new_listener(),
                 )?;
             }
+
+            node.task_executor.spawn_critical("taiko driver", async move {
+                driver::start_taiko_indexer(true, true, None).await;
+            });
 
             node_exit_future.await
         },
