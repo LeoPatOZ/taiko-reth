@@ -61,7 +61,12 @@ fn main() {
             }
 
             node.task_executor.spawn_critical("taiko driver", async move {
-                driver::start_taiko_indexer(true, true, None).await;
+                match driver::start_taiko_indexer(true, true, None).await {
+                    Ok(_) => info!("Taiko indexer completed successfully"),
+                    Err(e) => {
+                        tracing::error!("Taiko indexer failed: {:?}", e);
+                    }
+                }
             });
 
             node_exit_future.await
